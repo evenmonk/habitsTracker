@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Habit</string>
+    <string name="name">Name</string>
+    <string name="good">Good</string>
+    <string name="bad">Bad</string>
+    <string name="quantity">Quantity</string>
+    <string name="period">Period</string>
+    <string name="description">Description</string>
+    <string name="period_prefix"> time(s) in: </string>
+    <string name="priority_header">Priority:</string>
+    <string name="two">2</string>
+    <string name="selected_color_header">Selected color:</string>
+    <string name="RGB">RGB:</string>
+    <string name="HSV">HSV:</string>
+    <string name="rgb_formatted">R:%d G:%d B:%d</string>
+    <string name="hsv_formatted">H:%f S:%f V:%f</string>
+    <string name="home">Home</string>
+    <string name="about">About</string>
+
+    <string-array name="priority_list">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+</resources>

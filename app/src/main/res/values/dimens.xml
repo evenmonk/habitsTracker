@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="square_size">60dp</dimen>
+    <dimen name="margin_side">10dp</dimen>
+    <dimen name="padding_vertical">8dp</dimen>
+    <dimen name="height">76dp</dimen>
+</resources>
