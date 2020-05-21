@@ -1,19 +1,38 @@
 package com.example.habitsTracker.screens
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import com.example.habitsTracker.BottomSheetFragment
 import com.example.habitsTracker.R
+import com.example.habitsTracker.addDivider
+import com.example.habitsTracker.pattern.Habit
 import com.example.habitsTracker.pattern.HabitType
-import com.example.habitsTracker.pattern.Repository
+import com.example.habitsTracker.pattern.ListViewModel
 import com.example.habitsTracker.recycler.Adapter
+import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_list.*
 
 class ListFragment : Fragment() {
-    private var adapter : Adapter? = null
+    private lateinit var adapter : Adapter
+    private lateinit var viewModel: ListViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return ListViewModel() as T
+            }
+        }).get(ListViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,23 +45,47 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val decoration =
-            DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        recycler.addItemDecoration(decoration)
+        recycler.addDivider(activity as Context)
 
         val habitType = arguments?.get(ARGS_TYPE) as HabitType
 
-        adapter = Adapter(Repository.habits, habitType)
-
+        adapter = Adapter()
 
         recycler.adapter = adapter
+
+
+        bottom_sheet.setOnClickListener {
+            BottomSheetFragment().show(
+                requireActivity().supportFragmentManager,
+                null
+            )
+        }
+
+        fab.setOnClickListener {
+            val n = Navigation.findNavController(activity as Activity, R.id.nav_host_fragment)
+            n.navigate(R.id.detailsFragment)
+        }
+
+        (if (habitType == HabitType.GOOD) viewModel.goodHabits else viewModel.badHabits).observe(
+            viewLifecycleOwner,
+            Observer {
+                updateList(it!!)
+            })
+
+        viewModel.hasChanges.observe(viewLifecycleOwner, Observer {
+            val list =
+                (if (habitType == HabitType.GOOD)
+                    viewModel.goodHabits
+                else
+                    viewModel.badHabits).value
+
+            updateList(list!!)
+        })
     }
 
-    override fun onResume() {
-        super.onResume()
-        Repository.habits.sortBy { it.priority }
-        adapter?.setItems()
-        adapter?.notifyDataSetChanged()
+    private fun updateList(list: List<Habit>) {
+        adapter.setItems(list)
+        adapter.notifyDataSetChanged()
     }
 
     companion object {

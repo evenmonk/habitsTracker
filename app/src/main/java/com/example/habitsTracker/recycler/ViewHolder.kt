@@ -1,13 +1,17 @@
 package com.example.habitsTracker.recycler
 
+import android.app.Activity
+import android.os.Bundle
 import android.view.View
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habitsTracker.R
 import com.example.habitsTracker.pattern.Habit
 import com.example.habitsTracker.pattern.HabitType
-import com.example.habitsTracker.screen_changer.FragmentChanger
+import com.example.habitsTracker.screens.DetailsFragment
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item.view.*
+import java.lang.IllegalStateException
 
 class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
@@ -18,6 +22,7 @@ class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(con
         val resId = when (habit.type) {
             HabitType.GOOD -> R.drawable.like
             HabitType.BAD -> R.drawable.dislike
+            else -> throw IllegalStateException("Недопустимый тип")
         }
 
         containerView.type.setImageResource(resId)
@@ -30,7 +35,10 @@ class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(con
         containerView.quantity.text = habit.quantity.toString()
 
         containerView.setOnClickListener {
-            (containerView.context as FragmentChanger).startDetailsScreen(habit.name)
+            val bundle = Bundle()
+            bundle.putInt(DetailsFragment.ARGS_HABIT_ID, habit.id)
+            Navigation.findNavController(containerView.context as Activity, R.id.nav_host_fragment)
+                .navigate(R.id.detailsFragment, bundle)
         }
     }
 }

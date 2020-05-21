@@ -16,6 +16,11 @@
     <string name="hsv_formatted">H:%f S:%f V:%f</string>
     <string name="home">Home</string>
     <string name="about">About</string>
+    <string name="search_and_filtration">Search and filter</string>
+    <string name="sort_order">Priority order:</string>
+    <string name="straight">1–9</string>
+    <string name="reverse">9–1</string>
+    <string name="find">Find</string>
 
     <string-array name="priority_list">
         <item>1</item>

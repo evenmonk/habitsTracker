@@ -1,6 +1,7 @@
 package com.example.habitsTracker.screens
 
 import android.content.Context
+import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,33 +13,46 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.example.habitsTracker.R
 import com.example.habitsTracker.pattern.Habit
 import com.example.habitsTracker.pattern.HabitType
 import com.example.habitsTracker.pattern.Repository
 import com.example.habitsTracker.screen_changer.FragmentChanger
+import com.example.habitsTracker.pattern.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
 class DetailsFragment : Fragment(), View.OnClickListener {
 
-    private var habit : Habit? = null
+    private lateinit var viewModel: DetailsViewModel
+    private lateinit var habit : Habit
     private var selectedColor = -1
 
     private var callback : FragmentChanger? = null
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callback = activity as FragmentChanger
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return DetailsViewModel() as T
+            }
+        }).get(DetailsViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_details, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         save.setOnClickListener(this)
-
+        habit = viewModel.getHabit(arguments?.getInt(ARGS_HABIT_ID))
         addImages()
 
         setValues()
@@ -68,6 +82,9 @@ class DetailsFragment : Fragment(), View.OnClickListener {
         lp.marginStart = marginSide
 
         val halfSize = squareSize / 2
+        val doubleMarginSide = marginSide * 2
+
+        val a = FloatArray(3)
 
         for(i in 0..15){
 
@@ -81,7 +98,10 @@ class DetailsFragment : Fragment(), View.OnClickListener {
             val xPosition = (marginSide * 2 + squareSize) * i + marginSide + halfSize
             val yPosition = marginTop + halfSize
 
-            val pixel = bitmap.getPixel(xPosition, yPosition)
+            val pixel = bitmap.getPixel(
+                (doubleMarginSide + squareSize) * i + marginSide + halfSize,
+                marginTop + halfSize
+            )
 
             val r = Color.red(pixel)
             val g = Color.green(pixel)
@@ -94,7 +114,6 @@ class DetailsFragment : Fragment(), View.OnClickListener {
             imageView.setOnClickListener {
                 selected_color.colorFilter = imageView.colorFilter
                 selectedColor = color
-                val a = FloatArray(3)
                 Color.colorToHSV(color, a)
                 rgb.text = resources.getString(R.string.rgb_formatted, r, g, b)
                 hsv.text = resources.getString(R.string.hsv_formatted, a[0], a[1], a[2])
@@ -103,21 +122,18 @@ class DetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setValues(){
-        habit = Repository.getHabit(arguments?.getString(ARGS_HABIT_NAME))
-
-        if(habit != null){
-            name_edit.setText(habit?.name)
-            description_edit.setText(habit?.description)
-            priority_spinner.setSelection(habit?.priority!! - 1)
-            when (habit?.type) {
-                HabitType.GOOD -> good_radio.isChecked = true
-                HabitType.BAD -> bad_radio.isChecked = true
-            }
-            quantity_edit.setText(habit?.quantity!!.toString())
-            period_edit.setText(habit?.period!!.toString())
-            selected_color.setColorFilter(habit?.color!!)
-            selectedColor = habit?.color!!
+        when (habit.type) {
+            HabitType.GOOD -> good_radio.isChecked = true
+            HabitType.BAD -> bad_radio.isChecked = true
+            else -> return
         }
+        name_edit.setText(habit.name)
+        description_edit.setText(habit.description)
+        priority_spinner.setSelection(habit.priority - 1)
+        quantity_edit.setText(habit.quantity.toString())
+        period_edit.setText(habit.period.toString())
+        selected_color.setColorFilter(habit.color)
+        selectedColor = habit.color
     }
 
     override fun onClick(v: View?) {
@@ -133,48 +149,25 @@ class DetailsFragment : Fragment(), View.OnClickListener {
             return
         }
 
-        val type = when {
-            bad_radio.isChecked -> HabitType.BAD
-            good_radio.isChecked -> HabitType.GOOD
-            else -> throw IllegalStateException("No type selected")
-        }
+        viewModel.resolveHabit(
+            habit,
+            name_edit.text.toString(),
+            description_edit.text.toString(),
+            priority_spinner.selectedItem.toString().toInt(),
+            when {
+                bad_radio.isChecked -> HabitType.BAD
+                good_radio.isChecked -> HabitType.GOOD
+                else -> throw IllegalStateException("No type selected")
+            },
+            period_edit.text.toString().toInt(),
+            quantity_edit.text.toString().toInt(),
+            selectedColor
+        )
 
-        if(habit == null){
-            val habit = Habit(
-                name_edit.text.toString(),
-                description_edit.text.toString(),
-                priority_spinner.selectedItem.toString().toInt(),
-                type,
-                period_edit.text.toString().toInt(),
-                quantity_edit.text.toString().toInt(),
-                selectedColor
-            )
-
-            Repository.addHabit(habit)
-        } else {
-            habit?.name = name_edit.text.toString()
-            habit?.description = description_edit.text.toString()
-            habit?.priority = priority_spinner.selectedItem.toString().toInt()
-            habit?.type = type
-            habit?.period =  period_edit.text.toString().toInt()
-            habit?.quantity = quantity_edit.text.toString().toInt()
-            habit?.color = selectedColor
-        }
-
-        activity?.supportFragmentManager?.popBackStack()
+        Navigation.findNavController(activity as Activity, R.id.nav_host_fragment).popBackStack()
     }
 
     companion object {
-        private const val ARGS_NAME = "args_name"
-        private const val ARGS_HABIT_NAME = "args_habit_name"
-
-        fun newInstance(name : String, habitName : String?) : DetailsFragment{
-            val fragment =  DetailsFragment()
-            val bundle = Bundle()
-            bundle.putString(ARGS_NAME, name)
-            bundle.putString(ARGS_HABIT_NAME, habitName)
-            fragment.arguments = bundle
-            return fragment
-        }
+        const val ARGS_HABIT_ID = "args_habit_id"
     }
 }
