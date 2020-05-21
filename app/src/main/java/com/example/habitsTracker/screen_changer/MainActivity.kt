@@ -8,10 +8,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.example.habitsTracker.R
-import com.example.habitsTracker.pattern.HabitType
-import com.example.habitsTracker.screens.AboutFragment
-import com.example.habitsTracker.screens.DetailsFragment
-import com.example.habitsTracker.screens.MainFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 

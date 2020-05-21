@@ -1,6 +1,5 @@
 package com.example.habitsTracker.screens
 
-import android.content.Context
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
@@ -17,10 +16,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.habitsTracker.R
-import com.example.habitsTracker.pattern.Habit
-import com.example.habitsTracker.pattern.HabitType
-import com.example.habitsTracker.pattern.Repository
-import com.example.habitsTracker.screen_changer.FragmentChanger
 import com.example.habitsTracker.pattern.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
@@ -29,8 +24,6 @@ class DetailsFragment : Fragment(), View.OnClickListener {
     private lateinit var viewModel: DetailsViewModel
     private lateinit var habit : Habit
     private var selectedColor = -1
-
-    private var callback : FragmentChanger? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,9 +87,6 @@ class DetailsFragment : Fragment(), View.OnClickListener {
             imageView.setBackgroundResource(R.drawable.border_black)
 
             linear_layout.addView(imageView)
-
-            val xPosition = (marginSide * 2 + squareSize) * i + marginSide + halfSize
-            val yPosition = marginTop + halfSize
 
             val pixel = bitmap.getPixel(
                 (doubleMarginSide + squareSize) * i + marginSide + halfSize,

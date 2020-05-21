@@ -32,8 +32,6 @@ class Repository {
             )
         )
 
-        val habits = MutableLiveData<List<Habit>>(mutableHabits)
-
         private val mutableGoodHabits =
             mutableHabits.filter { it.type == HabitType.GOOD }.toMutableList()
         private val mutableBadHabits =

@@ -1,7 +1,7 @@
 package com.example.habitsTracker.pattern
 
 data class Habit (
-    val id: Int,
+    var id: Int,
     var name: String?,
     var description: String?,
     var priority: Int,

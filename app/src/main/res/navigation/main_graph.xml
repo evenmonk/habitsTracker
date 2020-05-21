@@ -8,6 +8,7 @@
         android:id="@+id/aboutFragment"
         android:name="com.example.habitsTracker.screens.AboutFragment"
         android:label="AboutFragment" />
+
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.example.habitsTracker.screens.DetailsFragment"

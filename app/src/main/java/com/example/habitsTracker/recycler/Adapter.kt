@@ -5,8 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habitsTracker.R
 import com.example.habitsTracker.pattern.Habit
-import com.example.habitsTracker.pattern.HabitType
-import com.example.habitsTracker.pattern.Repository
 
 class Adapter: RecyclerView.Adapter<ViewHolder>() {
 
@@ -32,6 +30,8 @@ class Adapter: RecyclerView.Adapter<ViewHolder>() {
                 position
             else
                 itemCount - position - 1
+
+        holder.bind(myHabits[pos])
     }
 
     fun setItems(list: List<Habit>){
