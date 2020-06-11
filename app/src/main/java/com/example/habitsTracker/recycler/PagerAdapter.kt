@@ -3,7 +3,7 @@ package com.example.habitsTracker.recycler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.habitsTracker.pattern.HabitType
+import com.example.habitsTracker.model.HabitType
 import com.example.habitsTracker.screens.ListFragment
 import java.lang.IllegalStateException
 

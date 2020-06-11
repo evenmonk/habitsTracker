@@ -1,10 +1,10 @@
-package com.example.habitsTracker.pattern
+package com.example.habitsTracker.model
 
 import androidx.lifecycle.ViewModel
 
 class DetailsViewModel: ViewModel() {
     fun getHabit(id: Int?): Habit {
-        return Repository.getHabit(id)
+        return Repository.get().getHabit(id)
     }
 
     fun resolveHabit(
@@ -17,7 +17,7 @@ class DetailsViewModel: ViewModel() {
         quantity: Int,
         color: Int
     ) {
-        Repository.resolveHabit(
+        Repository.get().resolveHabit(
             habit,
             name,
             description,

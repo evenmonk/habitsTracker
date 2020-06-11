@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.habitsTracker.pattern.ListViewModel
+import com.example.habitsTracker.model.ListViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.bottom_sheet.*
 
@@ -34,7 +34,7 @@ class BottomSheetFragment: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sheet_search.setText(viewModel.filterString)
+        sheet_search.setText(viewModel.filterString.value)
 
         sheet_search.addTextChangedListener {editable ->
             val input = editable.toString()
@@ -53,7 +53,7 @@ class BottomSheetFragment: BottomSheetDialogFragment() {
             }
         }
 
-        (if(viewModel.straight)
+        (if(viewModel.straightOrder.value == true)
             sheet_straight
         else
             sheet_reverse).isChecked = true

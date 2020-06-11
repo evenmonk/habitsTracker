@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.habitsTracker.R
-import com.example.habitsTracker.pattern.*
+import com.example.habitsTracker.model.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
 class DetailsFragment : Fragment(), View.OnClickListener {
@@ -45,7 +45,7 @@ class DetailsFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         save.setOnClickListener(this)
-        habit = viewModel.getHabit(arguments?.getInt(ARGS_HABIT_ID))
+        habit = viewModel.getHabit(arguments?.getInt(ARGS_HABIT_ID) ?: -1)
         addImages()
 
         setValues()

@@ -6,8 +6,8 @@ import android.view.View
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habitsTracker.R
-import com.example.habitsTracker.pattern.Habit
-import com.example.habitsTracker.pattern.HabitType
+import com.example.habitsTracker.model.Habit
+import com.example.habitsTracker.model.HabitType
 import com.example.habitsTracker.screens.DetailsFragment
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.list_item.view.*
@@ -36,7 +36,7 @@ class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(con
 
         containerView.setOnClickListener {
             val bundle = Bundle()
-            bundle.putInt(DetailsFragment.ARGS_HABIT_ID, habit.id)
+            bundle.putInt(DetailsFragment.ARGS_HABIT_ID, habit.id ?: -1)
             Navigation.findNavController(containerView.context as Activity, R.id.nav_host_fragment)
                 .navigate(R.id.detailsFragment, bundle)
         }

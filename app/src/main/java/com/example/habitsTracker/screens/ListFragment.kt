@@ -14,9 +14,8 @@ import androidx.navigation.Navigation
 import com.example.habitsTracker.BottomSheetFragment
 import com.example.habitsTracker.R
 import com.example.habitsTracker.addDivider
-import com.example.habitsTracker.pattern.Habit
-import com.example.habitsTracker.pattern.HabitType
-import com.example.habitsTracker.pattern.ListViewModel
+import com.example.habitsTracker.model.HabitType
+import com.example.habitsTracker.model.ListViewModel
 import com.example.habitsTracker.recycler.Adapter
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -66,26 +65,24 @@ class ListFragment : Fragment() {
             n.navigate(R.id.detailsFragment)
         }
 
-        (if (habitType == HabitType.GOOD) viewModel.goodHabits else viewModel.badHabits).observe(
-            viewLifecycleOwner,
-            Observer {
-                updateList(it!!)
-            })
+        viewModel.getHabits().observe(viewLifecycleOwner, Observer { list ->
+            val actualItems =
+                if (habitType == HabitType.GOOD) {
+                    list.filter { it.type == HabitType.GOOD }
+                } else {
+                    list.filter { it.type == HabitType.BAD }
+                }
 
-        viewModel.hasChanges.observe(viewLifecycleOwner, Observer {
-            val list =
-                (if (habitType == HabitType.GOOD)
-                    viewModel.goodHabits
-                else
-                    viewModel.badHabits).value
-
-            updateList(list!!)
+            adapter.setItems(actualItems)
         })
-    }
 
-    private fun updateList(list: List<Habit>) {
-        adapter.setItems(list)
-        adapter.notifyDataSetChanged()
+        viewModel.filterString.observe(viewLifecycleOwner, Observer {
+            adapter.actualizeItems(it)
+        })
+
+        viewModel.straightOrder.observe(viewLifecycleOwner, Observer {
+            adapter.actualizeItems(it)
+        })
     }
 
     companion object {
