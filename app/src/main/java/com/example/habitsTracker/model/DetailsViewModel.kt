@@ -1,11 +1,13 @@
 package com.example.habitsTracker.model
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DetailsViewModel: ViewModel() {
-    fun getHabit(id: Int?): Habit {
-        return Repository.get().getHabit(id)
-    }
+    val done = MutableLiveData<Boolean>()
 
     fun resolveHabit(
         habit: Habit,
@@ -17,16 +19,19 @@ class DetailsViewModel: ViewModel() {
         quantity: Int,
         color: Int
     ) {
-        Repository.get().resolveHabit(
-            habit,
-            name,
-            description,
-            priority,
-            type,
-            period,
-            quantity,
-            color
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            Repository.get().resolveHabit(
+                habit,
+                name,
+                description,
+                priority,
+                type,
+                period,
+                quantity,
+                color
+            )
+            done.postValue(true)
+        }
     }
 }
 

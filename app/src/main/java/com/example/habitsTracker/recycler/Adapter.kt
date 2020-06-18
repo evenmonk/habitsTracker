@@ -5,10 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habitsTracker.R
 import com.example.habitsTracker.model.Habit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Adapter: RecyclerView.Adapter<ViewHolder>() {
+
     private var filterString = ""
-    private val straightOrder = true
+    private var straightOrder = true
 
     private var myHabits: List<Habit> = listOf()
     private var currentItems: List<Habit> = myHabits
@@ -23,31 +28,34 @@ class Adapter: RecyclerView.Adapter<ViewHolder>() {
             )
         )
     }
+
     override fun getItemCount(): Int {
         return currentItems.size
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentItems[position])
     }
 
     fun setItems(list: List<Habit>){
         myHabits = list
-        currentItems = myHabits
-        notifyDataSetChanged()
+        actualizeItems()
     }
 
     fun actualizeItems(prefix: String) {
-        currentItems = myHabits.filter { it.name?.startsWith(prefix) ?: false }
-        notifyDataSetChanged()
+        filterString = prefix
+        actualizeItems()
     }
 
     fun actualizeItems(order: Boolean) {
-        currentItems =
-            if (order)
-                currentItems.sortedBy { it.priority }
-            else
-                currentItems.sortedByDescending { it.priority }
+        straightOrder = order
+        actualizeItems()
+    }
 
+    private fun actualizeItems() {
+        currentItems = myHabits.filter { it.name?.startsWith(filterString) ?: false }
+        currentItems =
+            currentItems.sortedBy { it.priority }
         notifyDataSetChanged()
     }
 }

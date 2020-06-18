@@ -1,22 +1,19 @@
 package com.example.habitsTracker.model
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 
 @Dao
 interface HabitDao {
-    @Insert
-    fun addHabit(habit: Habit)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addHabit(habit: Habit)
 
     @Query("select * from habit")
     fun getHabits(): LiveData<List<Habit>>
 
-    @Query("select * from habit where id=:id")
-    fun getHabit(id: Int): Habit
-
     @Update
-    fun updateHabit(habit: Habit)
+    suspend fun updateHabit(habit: Habit)
+
+    @Delete
+    suspend fun deleteHabit(habit: Habit)
 }

@@ -3,19 +3,17 @@ package com.example.habitsTracker.model
 import androidx.lifecycle.LiveData
 import com.example.habitsTracker.App
 
-
 class Repository(private val habitDao: HabitDao) {
+
     fun getHabitsLiveData(): LiveData<List<Habit>> {
         return habitDao.getHabits()
     }
 
-    fun getHabit(id: Int?): Habit {
-        if (id == null || id == -1)
-            return Habit.create()
-        return habitDao.getHabit(id)
+    suspend fun deleteHabit(habit: Habit) {
+        habitDao.deleteHabit(habit)
     }
 
-    fun resolveHabit(
+    suspend fun resolveHabit(
         habit: Habit,
         name: String?,
         description: String?,
@@ -40,6 +38,7 @@ class Repository(private val habitDao: HabitDao) {
         } else {
             habitDao.updateHabit(habit)
         }
+
     }
 
     companion object {

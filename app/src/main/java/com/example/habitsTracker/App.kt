@@ -13,7 +13,7 @@ class App : Application() {
         val db = Room.databaseBuilder(
             this,
             Database::class.java, "db"
-        ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration().build()
 
         val habitDao = db.habitDao()
 

@@ -53,7 +53,7 @@ class BottomSheetFragment: BottomSheetDialogFragment() {
             }
         }
 
-        (if(viewModel.straightOrder.value == true)
+        (if(viewModel.straightOrder.value != false)
             sheet_straight
         else
             sheet_reverse).isChecked = true
