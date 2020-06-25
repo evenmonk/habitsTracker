@@ -11,18 +11,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.habitsTracker.BottomSheetFragment
 import com.example.habitsTracker.R
 import com.example.habitsTracker.addDivider
 import com.example.habitsTracker.model.HabitType
 import com.example.habitsTracker.model.ListViewModel
 import com.example.habitsTracker.recycler.Adapter
+import com.example.habitsTracker.recycler.ItemTouchCallback
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_list.*
 
+@Suppress("UNCHECKED_CAST")
 class ListFragment : Fragment() {
-    private lateinit var adapter : Adapter
     private lateinit var viewModel: ListViewModel
+    private lateinit var adapter : Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +52,10 @@ class ListFragment : Fragment() {
         val habitType = arguments?.get(ARGS_TYPE) as HabitType
 
         adapter = Adapter()
-
         recycler.adapter = adapter
 
+        val itemTouchHelper = ItemTouchHelper(ItemTouchCallback(viewModel))
+        itemTouchHelper.attachToRecyclerView(recycler)
 
         bottom_sheet.setOnClickListener {
             BottomSheetFragment().show(
@@ -68,9 +72,9 @@ class ListFragment : Fragment() {
         viewModel.getHabits().observe(viewLifecycleOwner, Observer { list ->
             val actualItems =
                 if (habitType == HabitType.GOOD) {
-                    list.filter { it.type == HabitType.GOOD }
+                    list.filter { it.type == HabitType.GOOD.value }
                 } else {
-                    list.filter { it.type == HabitType.BAD }
+                    list.filter { it.type == HabitType.BAD.value }
                 }
 
             adapter.setItems(actualItems)

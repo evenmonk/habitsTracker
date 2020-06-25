@@ -12,13 +12,13 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.habitsTracker.R
 import com.example.habitsTracker.model.*
 import kotlinx.android.synthetic.main.fragment_details.*
-import kotlinx.coroutines.*
 
 class DetailsFragment : Fragment(), View.OnClickListener {
 
@@ -47,6 +47,10 @@ class DetailsFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         save.setOnClickListener(this)
+
+        viewModel.done.observe(viewLifecycleOwner, Observer {
+            Navigation.findNavController(activity as Activity, R.id.nav_host_fragment).popBackStack()
+        })
 
         addImages()
         setValues()
@@ -112,15 +116,15 @@ class DetailsFragment : Fragment(), View.OnClickListener {
 
     private fun setValues(){
         when (habit.type) {
-            HabitType.GOOD -> good_radio.isChecked = true
-            HabitType.BAD -> bad_radio.isChecked = true
+            HabitType.GOOD.value -> good_radio.isChecked = true
+            HabitType.BAD.value -> bad_radio.isChecked = true
             else -> return
         }
-        name_edit.setText(habit.name)
+        name_edit.setText(habit.title)
         description_edit.setText(habit.description)
         priority_spinner.setSelection(habit.priority - 1)
-        quantity_edit.setText(habit.quantity.toString())
-        period_edit.setText(habit.period.toString())
+        quantity_edit.setText(habit.count.toString())
+        period_edit.setText(habit.frequency.toString())
         selected_color.setColorFilter(habit.color)
         selectedColor = habit.color
     }

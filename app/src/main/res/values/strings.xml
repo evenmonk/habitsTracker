@@ -22,6 +22,11 @@
     <string name="reverse">9–1</string>
     <string name="find">Find</string>
 
+    <string name="token">035c58f1–83a3–4ac6–8468–6f9fe1e7e09e</string>
+    <string name="base_url">https://droid-test-server.doubletapp.ru/api/</string>
+
+    <string name="image_url">https://sun9–11.userapi.com/c543108/v543108664/5d278/KM7wTYzCZ8w.jpg</string>
+
     <string-array name="priority_list">
         <item>1</item>
         <item>2</item>

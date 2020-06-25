@@ -20,7 +20,7 @@ class ListViewModel: ViewModel() {
     }
 
     fun changeOrder(straight: Boolean?) {
-        mutableStraightOrder.value = true
+        mutableStraightOrder.value = straight
     }
 
     fun getHabits(): LiveData<List<Habit>> {
@@ -30,6 +30,12 @@ class ListViewModel: ViewModel() {
     fun deleteHabit(habit: Habit) {
         viewModelScope.launch(Dispatchers.IO) {
             Repository.get().deleteHabit(habit)
+        }
+    }
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            Repository.get().loadHabits()
         }
     }
 }

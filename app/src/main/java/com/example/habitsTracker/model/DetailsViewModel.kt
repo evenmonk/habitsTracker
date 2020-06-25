@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DetailsViewModel: ViewModel() {
+
     val done = MutableLiveData<Boolean>()
 
     fun resolveHabit(

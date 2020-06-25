@@ -7,25 +7,45 @@ import java.io.Serializable
 
 @Entity
 data class Habit (
-    @ColumnInfo var name: String?,
+    @ColumnInfo var count: Int,
+    @ColumnInfo var color: Int,
+    @ColumnInfo var date: Int,
     @ColumnInfo var description: String?,
+    @ColumnInfo var frequency: Int,
     @ColumnInfo var priority: Int,
-    @ColumnInfo var type: HabitType,
-    @ColumnInfo var period: Int,
-    @ColumnInfo var quantity : Int,
-    @ColumnInfo var color: Int) : Serializable {
+    @ColumnInfo var title: String?,
+    @ColumnInfo var type: Int,
+    @PrimaryKey @ColumnInfo var uid: String
+    ) : Serializable {
 
-    @PrimaryKey(autoGenerate = true) var id: Int? = null
+    fun addUid(uid: HabitUID) {
+        this.uid = uid.uid
+    }
+
+    fun toSimpleHabit(): SimpleHabit {
+        return SimpleHabit(
+            count,
+            color,
+            date,
+            description,
+            frequency,
+            priority,
+            title,
+            type
+        )
+    }
 
     companion object {
         fun create() = Habit(
-                    null,
-                    null,
-                    -1,
-                    HabitType.UNDEFINED,
                     -1,
                     -1,
-                    -1
-                )
+                    -1,
+            null,
+                    -1,
+            -1,
+            null,
+            HabitType.UNDEFINED.value,
+            "foo"
+        )
     }
 }
